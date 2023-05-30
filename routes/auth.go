@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func addAuthRoutes(rg *gin.Engine) (*grpc.ClientConn, *gin.RouterGroup, error) {
+func addAuthRoutes(rg *gin.Engine) (*grpc.ClientConn, pb.AuthServiceClient, error) {
 	address := os.Getenv("AUTH_ADDR")
 	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -18,7 +18,8 @@ func addAuthRoutes(rg *gin.Engine) (*grpc.ClientConn, *gin.RouterGroup, error) {
 	}
 	auth := rg.Group("/auth")
 	client := pb.NewAuthServiceClient(conn)
-	auth.GET("/req_pq", func(c *gin.Context) {
+	auth.Use(rateLimit)
+	auth.POST("/req_pq", func(c *gin.Context) {
 		var req *pb.ReqPQRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -36,7 +37,7 @@ func addAuthRoutes(rg *gin.Engine) (*grpc.ClientConn, *gin.RouterGroup, error) {
 		c.JSON(http.StatusOK, res)
 	})
 
-	auth.GET("/req_dh_params", func(c *gin.Context) {
+	auth.POST("/req_dh_params", func(c *gin.Context) {
 		var req *pb.ReqDHParamsRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -54,5 +55,5 @@ func addAuthRoutes(rg *gin.Engine) (*grpc.ClientConn, *gin.RouterGroup, error) {
 		c.JSON(http.StatusOK, res)
 	})
 
-	return conn, auth, nil
+	return conn, client, nil
 }

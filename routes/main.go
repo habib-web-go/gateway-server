@@ -11,17 +11,14 @@ var router = gin.Default()
 
 func Run() {
 
-	authConn, authGroup, err := addAuthRoutes(router)
+	authConn, authClient, err := addAuthRoutes(router)
 	defer authConn.Close()
 	if err != nil {
 		log.Fatalf("Auth did not connect: %v", err)
 		return
 	}
-	authGroup.Use(func(ctx *gin.Context) {
 
-	})
-
-	bizConn, bizGroup, err := addBizRoutes(router)
+	bizConn, _, err := addBizRoutes(router, authClient)
 	defer bizConn.Close()
 	if err != nil {
 		log.Fatalf("Biz did not connect: %v", err)
