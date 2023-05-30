@@ -10,7 +10,6 @@ import (
 var router = gin.Default()
 
 func Run() {
-
 	authConn, authClient, err := addAuthRoutes(router)
 	defer authConn.Close()
 	if err != nil {

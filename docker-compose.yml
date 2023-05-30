@@ -43,3 +43,4 @@ networks:
 
 volumes:
   rate_limit_data:
+    name: rate_limit_data

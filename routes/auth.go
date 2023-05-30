@@ -12,13 +12,19 @@ import (
 
 func addAuthRoutes(rg *gin.Engine) (*grpc.ClientConn, pb.AuthServiceClient, error) {
 	address := os.Getenv("AUTH_ADDR")
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(
+		address,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	auth := rg.Group("/auth")
+
 	client := pb.NewAuthServiceClient(conn)
 	auth.Use(rateLimit)
+
 	auth.POST("/req_pq", func(c *gin.Context) {
 		var req *pb.ReqPQRequest
 		if err := c.ShouldBindJSON(&req); err != nil {

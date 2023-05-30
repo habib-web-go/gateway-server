@@ -13,13 +13,19 @@ import (
 
 func addBizRoutes(rg *gin.Engine, authClient authpb.AuthServiceClient) (*grpc.ClientConn, pb.SQLServiceClient, error) {
 	address := os.Getenv("BIZ_ADDR")
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(
+		address,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	biz := rg.Group("/biz")
+
 	client := pb.NewSQLServiceClient(conn)
 	biz.Use(createAuthCheckMiddleware(authClient))
+
 	biz.POST("/get_users", func(c *gin.Context) {
 		var req *pb.GetUsersRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -55,5 +61,6 @@ func addBizRoutes(rg *gin.Engine, authClient authpb.AuthServiceClient) (*grpc.Cl
 		}
 		c.JSON(http.StatusOK, res)
 	})
+
 	return conn, client, nil
 }
