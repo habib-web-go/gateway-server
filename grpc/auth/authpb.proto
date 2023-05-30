@@ -30,7 +30,16 @@ message reqDHParamsResponse {
   string b = 4;
 }
 
+message IsValidAuthKeyRequest {
+  string authkey = 1;
+}
+
+message IsValidAuthKeyResponse {
+  bool isValid = 1;
+}
+
 service AuthService {
   rpc reqPQ(ReqPQRequest) returns (ReqPQResponse);
   rpc reqDHParams(reqDHParamsRequest) returns (reqDHParamsResponse);
+  rpc isValidAuthkey(IsValidAuthKeyRequest) returns (IsValidAuthKeyResponse);
 }

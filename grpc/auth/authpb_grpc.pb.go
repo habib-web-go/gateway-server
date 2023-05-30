@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AuthService_ReqPQ_FullMethodName       = "/authDH.AuthService/reqPQ"
-	AuthService_ReqDHParams_FullMethodName = "/authDH.AuthService/reqDHParams"
+	AuthService_ReqPQ_FullMethodName          = "/authDH.AuthService/reqPQ"
+	AuthService_ReqDHParams_FullMethodName    = "/authDH.AuthService/reqDHParams"
+	AuthService_IsValidAuthkey_FullMethodName = "/authDH.AuthService/isValidAuthkey"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -29,6 +30,7 @@ const (
 type AuthServiceClient interface {
 	ReqPQ(ctx context.Context, in *ReqPQRequest, opts ...grpc.CallOption) (*ReqPQResponse, error)
 	ReqDHParams(ctx context.Context, in *ReqDHParamsRequest, opts ...grpc.CallOption) (*ReqDHParamsResponse, error)
+	IsValidAuthkey(ctx context.Context, in *IsValidAuthKeyRequest, opts ...grpc.CallOption) (*IsValidAuthKeyResponse, error)
 }
 
 type authServiceClient struct {
@@ -57,12 +59,22 @@ func (c *authServiceClient) ReqDHParams(ctx context.Context, in *ReqDHParamsRequ
 	return out, nil
 }
 
+func (c *authServiceClient) IsValidAuthkey(ctx context.Context, in *IsValidAuthKeyRequest, opts ...grpc.CallOption) (*IsValidAuthKeyResponse, error) {
+	out := new(IsValidAuthKeyResponse)
+	err := c.cc.Invoke(ctx, AuthService_IsValidAuthkey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
 type AuthServiceServer interface {
 	ReqPQ(context.Context, *ReqPQRequest) (*ReqPQResponse, error)
 	ReqDHParams(context.Context, *ReqDHParamsRequest) (*ReqDHParamsResponse, error)
+	IsValidAuthkey(context.Context, *IsValidAuthKeyRequest) (*IsValidAuthKeyResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -75,6 +87,9 @@ func (UnimplementedAuthServiceServer) ReqPQ(context.Context, *ReqPQRequest) (*Re
 }
 func (UnimplementedAuthServiceServer) ReqDHParams(context.Context, *ReqDHParamsRequest) (*ReqDHParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReqDHParams not implemented")
+}
+func (UnimplementedAuthServiceServer) IsValidAuthkey(context.Context, *IsValidAuthKeyRequest) (*IsValidAuthKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsValidAuthkey not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -125,6 +140,24 @@ func _AuthService_ReqDHParams_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_IsValidAuthkey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsValidAuthKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).IsValidAuthkey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_IsValidAuthkey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).IsValidAuthkey(ctx, req.(*IsValidAuthKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +172,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "reqDHParams",
 			Handler:    _AuthService_ReqDHParams_Handler,
+		},
+		{
+			MethodName: "isValidAuthkey",
+			Handler:    _AuthService_IsValidAuthkey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

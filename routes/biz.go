@@ -10,9 +10,12 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func addBizRoutes(rg *gin.Engine) (*grpc.ClientConn, error) {
+func addBizRoutes(rg *gin.Engine) (*grpc.ClientConn, *gin.RouterGroup, error) {
 	address := os.Getenv("BIZ_ADDR")
 	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, nil, err
+	}
 	biz := rg.Group("/auth")
 	client := pb.NewSQLServiceClient(conn)
 	biz.GET("/get_users", func(c *gin.Context) {
@@ -50,5 +53,5 @@ func addBizRoutes(rg *gin.Engine) (*grpc.ClientConn, error) {
 		}
 		c.JSON(http.StatusOK, res)
 	})
-	return conn, err
+	return conn, biz, nil
 }
