@@ -1,0 +1,36 @@
+syntax = "proto3";
+package authDH;
+option go_package = "grpc/auth";
+
+
+message ReqPQRequest {
+  string nonce = 1;
+  uint64 messageId = 2;
+}
+
+message ReqPQResponse {
+  string nonce = 1;
+  string serverNonce = 2;
+  uint64 messageId = 3;
+  string p = 4;
+  uint64 g = 5;
+}
+
+message reqDHParamsRequest {
+  string nonce = 1;
+  string serverNonce = 2;
+  uint64 messageId = 3;
+  string a = 4;
+}
+
+message reqDHParamsResponse {
+  string nonce = 1;
+  string serverNonce = 2;
+  uint64 messageId = 3;
+  string b = 4;
+}
+
+service AuthService {
+  rpc reqPQ(ReqPQRequest) returns (ReqPQResponse);
+  rpc reqDHParams(reqDHParamsRequest) returns (reqDHParamsResponse);
+}
