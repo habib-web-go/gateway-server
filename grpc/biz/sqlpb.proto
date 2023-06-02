@@ -1,13 +1,15 @@
 syntax = "proto3";
-package sqlInjection;
-option go_package = "grpc/biz";
 
-// import "google/protobuf/timestamp.proto";
+package sqlInjection;
+option go_package = "./grpc";
+
+import "google/api/annotations.proto";
 
 enum Sex {
   Man = 0;
   Female = 1;
 }
+
 message User {
   string name = 1;
   string family = 2;
@@ -16,22 +18,35 @@ message User {
   Sex sex = 5;
   string createdAt = 6;
 }
+
 message GetUsersRequest {
   optional uint64 userId = 1;
   string authKey = 2;
   uint64 messageId = 3;
 }
+
 message GetUsersWithSqlInjectRequest {
   optional string userId = 1;
   string authKey = 2;
   uint64 messageId = 3;
 }
+
 message GetUsersResponse {
   repeated User users = 1;
   uint64 messageId = 2;
 }
 
 service SQLService {
-  rpc getUsers(GetUsersRequest) returns (GetUsersResponse);
-  rpc getUsersWithSqlInject(GetUsersWithSqlInjectRequest) returns (GetUsersResponse);
+
+  rpc getUsers(GetUsersRequest) returns (GetUsersResponse) {
+    option (google.api.http) = {
+      get: "/users"
+    };
+  }
+
+  rpc getUsersWithSqlInject(GetUsersWithSqlInjectRequest) returns (GetUsersResponse) {
+    option (google.api.http) = {
+      get: "/users-with-sql-inject"
+    };
+  }
 }
