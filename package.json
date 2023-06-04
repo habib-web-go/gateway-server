@@ -1,0 +1,26 @@
+{
+  "name": "gateway-server",
+  "version": "1.0.0",
+  "description": "```sh protoc --go_out=. --go-grpc_out=.  grpc/**/*.proto ```",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/habib-web-go/gateway-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/habib-web-go/gateway-server/issues"
+  },
+  "homepage": "https://github.com/habib-web-go/gateway-server#readme",
+  "dependencies": {
+    "swagger-ui": "^4.19.0"
+  }
+}

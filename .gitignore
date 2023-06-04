@@ -21,3 +21,6 @@
 go.work
 .env
 server
+
+# Node Modules
+node_modules

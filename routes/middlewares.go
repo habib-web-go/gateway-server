@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	pb "github.com/habib-web-go/gateway-server/grpc/auth"
+	pb "github.com/habib-web-go/gateway-server/gen/grpc/auth"
 	redis "github.com/habib-web-go/gateway-server/redis"
 )
 

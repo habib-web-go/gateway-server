@@ -5,11 +5,15 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var router = gin.Default()
 
 func Run() {
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	authConn, authClient, err := addAuthRoutes(router)
 	defer authConn.Close()
 	if err != nil {
