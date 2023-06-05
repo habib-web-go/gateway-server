@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/gin-gonic/gin/binding"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -38,7 +39,7 @@ func rateLimit(ctx *gin.Context) {
 func createAuthCheckMiddleware(client pb.AuthServiceClient) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var authkeyStruct *authCheckStruct
-		err := ctx.BindJSON(&authkeyStruct)
+		err := ctx.ShouldBindBodyWith(&authkeyStruct, binding.JSON)
 		if err != nil {
 			ctx.JSON(http.StatusNetworkAuthenticationRequired, gin.H{
 				"error": err.Error(),

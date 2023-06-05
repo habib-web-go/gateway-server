@@ -24,3 +24,5 @@ server
 
 # Node Modules
 node_modules
+go_path
+.idea

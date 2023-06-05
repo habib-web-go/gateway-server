@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"os"
 
@@ -47,7 +48,7 @@ func addBizRoutes(
 func getUsersHandler(client pb.SQLServiceClient) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req *pb.GetUsersRequest
-		if err := c.ShouldBindJSON(&req); err != nil {
+		if err := c.ShouldBindBodyWith(&req, binding.JSON); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
 			})
@@ -76,7 +77,7 @@ func getUsersHandler(client pb.SQLServiceClient) func(c *gin.Context) {
 func getUsersWithSqlInjectHandler(client pb.SQLServiceClient) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req *pb.GetUsersWithSqlInjectRequest
-		if err := c.ShouldBindJSON(&req); err != nil {
+		if err := c.ShouldBindBodyWith(&req, binding.JSON); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
 			})
